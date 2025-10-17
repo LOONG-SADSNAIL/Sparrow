@@ -1,0 +1,17 @@
+.idea/
+Assets/Settings/
+Assets/TutorialInfo/
+Library/
+Packages/
+ProjectSettings/
+Temp/
+Logs/
+obj/
+UserSettings/
+*.csproj
+Loongya01.sln
+Loongya01.sln.DotSettings.user
+Assets/Readme.asset
+Assets/Readme.asset.meta
+Assets/Settings.meta
+Assets/TutorialInfo.meta
