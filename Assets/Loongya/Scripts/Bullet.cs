@@ -7,27 +7,37 @@ public class Bullet : MonoBehaviour
 {
     private string logMessage;
     // 碰撞事件
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision ObjectWeHit)
     {
-        if (collision.gameObject.CompareTag("Target"))
+        if (ObjectWeHit.gameObject.CompareTag("Target"))
         {
-            logMessage = "hit" + collision.gameObject.name + " !";
+            logMessage = "hit" + ObjectWeHit.gameObject.name + " !";
             Debug.Log(logMessage); // 同时输出到控制台
-            //print("hit" + collision.gameObject.name + " !");
+            CreateBulletImpactEffect(ObjectWeHit);
             Destroy(this.gameObject);
         }
-        
-        
+        if (ObjectWeHit.gameObject.CompareTag("Wall"))
+        {
+            logMessage = "hit a wall!";
+            Debug.Log(logMessage); // 同时输出到控制台
+            CreateBulletImpactEffect(ObjectWeHit);
+            Destroy(this.gameObject);
+        }
     }
-    void OnGUI()
-    {
-        // 设置文本样式（位置、颜色、字体大小等）
-        GUI.color = Color.white;
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 24; // 字体大小
-        style.normal.textColor = Color.red; // 文本颜色
 
-        // 在屏幕左上角显示文本（x=10, y=10 是坐标）
-        GUI.Label(new Rect(10, 10, 500, 30), logMessage, style);
+    void CreateBulletImpactEffect(Collision ObjectWehit)
+    {
+        // 获取第一个接触点
+        ContactPoint contact = ObjectWehit.contacts[0];
+        // 实例化贴花弹孔
+        // 弹孔实例化,我们没法直接获取孔洞预制体的引用,因为子弹本身就是代码里创建的
+        // 所以,另辟蹊径,我们在场景里面创建一个全局引用物体,然后从里面获取?
+        GameObject hole = Instantiate(
+            GlobalReferences.Instance.bulletImpactEffectPrefab,
+            contact.point,
+            Quaternion.LookRotation(contact.normal)
+        );
+        // 把弹孔附着在碰撞的物体上
+        hole.transform.SetParent(ObjectWehit.gameObject.transform);
     }
 }
